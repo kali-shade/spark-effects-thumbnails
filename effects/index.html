@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spark • Effects</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    .layout {
+      display: flex;
+      height: 100%;
+    }
+    .sidebar {
+      width: 160px;
+      flex-shrink: 0;
+      background: #1a1a1a;
+      padding: 14px 10px;
+      overflow-y: auto;
+    }
+    .thumb-card {
+      margin-bottom: 14px;
+      cursor: pointer;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .thumb-card:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .thumb-card:hover .thumb-img {
+      transform: scale(1.08);
+    }
+    .thumb-card:hover .thumb-title {
+      color: #fff;
+    }
+    .thumb-card.active {
+      border-color: #fff;
+    }
+    .thumb-card.active .thumb-title {
+      color: #fff;
+    }
+    .thumb-card.inert {
+      cursor: default;
+    }
+    .thumb-card.inert:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .thumb-card.inert:hover .thumb-img {
+      transform: none;
+    }
+    .thumb-card.inert:hover .thumb-title {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .thumb-img-wrap {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 6px 6px 0 0;
+      overflow: hidden;
+    }
+    .thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+    .thumb-title {
+      padding: 6px 4px 8px;
+      font-size: 11px;
+      line-height: 1.25;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      transition: color 0.2s ease;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .frame-wrap {
+      flex: 1;
+      min-width: 0;
+      background: #000;
+    }
+    .frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="frame-wrap">
+      <iframe id="frame" src="about:blank" title="Effect"></iframe>
+    </div>
+  </div>
+  <script>
+    const frame = document.getElementById('frame');
+    const sidebar = document.getElementById('sidebar');
+
+    async function init() {
+      const res = await fetch('effects.json');
+      const items = await res.json();
+
+      let firstEffectCard = null;
+      let firstEffectPath = null;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const card = document.createElement('div');
+        card.className = 'thumb-card' + (item.path === '' ? ' inert' : '');
+
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'thumb-img-wrap';
+        const img = document.createElement('img');
+        img.className = 'thumb-img';
+        img.src = 'thumbnails/' + item.thumb_filename;
+        img.alt = item.title;
+        imgWrap.appendChild(img);
+
+        const title = document.createElement('div');
+        title.className = 'thumb-title';
+        title.textContent = item.title;
+
+        card.appendChild(imgWrap);
+        if (item.path !== '') {
+          card.appendChild(title);
+        }
+
+        if (item.path !== '') {
+          if (!firstEffectCard) {
+            firstEffectCard = card;
+            firstEffectPath = item.path;
+          }
+          card.addEventListener('click', () => {
+            frame.src = item.path + '/index.html';
+            const all = sidebar.querySelectorAll('.thumb-card:not(.inert)');
+            for (let j = 0; j < all.length; j++) all[j].classList.remove('active');
+            card.classList.add('active');
+          });
+        }
+
+        sidebar.appendChild(card);
+      }
+
+      if (firstEffectCard && firstEffectPath) {
+        frame.src = firstEffectPath + '/index.html';
+        firstEffectCard.classList.add('active');
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
