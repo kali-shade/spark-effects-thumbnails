@@ -88,6 +88,53 @@
       border: none;
       display: block;
     }
+
+    /* Bottom bar: titles only, for mobile */
+    .bottom-bar {
+      display: none;
+      flex-shrink: 0;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0;
+      padding: 10px 8px;
+      background: #1a1a1a;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .bottom-bar-item {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      white-space: nowrap;
+      border-radius: 6px;
+      background: #0d0d0d;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .bottom-bar-item:hover {
+      color: #fff;
+      background: #1a1a1a;
+    }
+    .bottom-bar-item.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Desktop/landscape: sidebar visible, bottom bar hidden */
+    @media (min-width: 769px) {
+      .sidebar { display: block; }
+      .bottom-bar { display: none !important; }
+    }
+
+    /* Mobile: sidebar hidden, bottom bar visible */
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      .sidebar { display: none !important; }
+      .bottom-bar { display: flex !important; }
+    }
   </style>
 </head>
 <body>
@@ -96,10 +143,26 @@
     <div class="frame-wrap">
       <iframe id="frame" src="about:blank" title="Effect"></iframe>
     </div>
+    <nav class="bottom-bar" id="bottomBar" aria-label="Effects"></nav>
   </div>
   <script>
     const frame = document.getElementById('frame');
     const sidebar = document.getElementById('sidebar');
+    const bottomBar = document.getElementById('bottomBar');
+
+    function setActiveByPath(path) {
+      const sidebarCards = sidebar.querySelectorAll('.thumb-card:not(.inert)');
+      for (let j = 0; j < sidebarCards.length; j++) {
+        const card = sidebarCards[j];
+        const isActive = card.dataset.path === path;
+        card.classList.toggle('active', isActive);
+      }
+      const bottomItems = bottomBar.querySelectorAll('.bottom-bar-item');
+      for (let k = 0; k < bottomItems.length; k++) {
+        const item = bottomItems[k];
+        item.classList.toggle('active', item.dataset.path === path);
+      }
+    }
 
     async function init() {
       const res = await fetch('effects.json');
@@ -112,6 +175,7 @@
         const item = items[i];
         const card = document.createElement('div');
         card.className = 'thumb-card' + (item.path === '' ? ' inert' : '');
+        if (item.path !== '') card.dataset.path = item.path;
 
         const imgWrap = document.createElement('div');
         imgWrap.className = 'thumb-img-wrap';
@@ -137,18 +201,29 @@
           }
           card.addEventListener('click', () => {
             frame.src = item.path + '/index.html';
-            const all = sidebar.querySelectorAll('.thumb-card:not(.inert)');
-            for (let j = 0; j < all.length; j++) all[j].classList.remove('active');
-            card.classList.add('active');
+            setActiveByPath(item.path);
           });
         }
 
         sidebar.appendChild(card);
+
+        if (item.path !== '') {
+          const bottomItem = document.createElement('button');
+          bottomItem.type = 'button';
+          bottomItem.className = 'bottom-bar-item';
+          bottomItem.dataset.path = item.path;
+          bottomItem.textContent = item.title;
+          bottomItem.addEventListener('click', () => {
+            frame.src = item.path + '/index.html';
+            setActiveByPath(item.path);
+          });
+          bottomBar.appendChild(bottomItem);
+        }
       }
 
       if (firstEffectCard && firstEffectPath) {
         frame.src = firstEffectPath + '/index.html';
-        firstEffectCard.classList.add('active');
+        setActiveByPath(firstEffectPath);
       }
     }
 
