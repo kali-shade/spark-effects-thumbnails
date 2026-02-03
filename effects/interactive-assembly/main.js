@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { SplatMesh, dyno } from "@sparkjsdev/spark";
-import { getAssetFileURL } from "/examples/js/get-asset-url.js";
+import { getAssetFileURL } from "/spark-effects-thumbnails/examples/js/get-asset-url.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);

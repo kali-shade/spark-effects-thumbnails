@@ -1,7 +1,7 @@
 import { SplatMesh, dyno } from "@sparkjsdev/spark";
 import GUI from "lil-gui";
 import * as THREE from "three";
-import { getAssetFileURL } from "/examples/js/get-asset-url.js";
+import { getAssetFileURL } from "/spark-effects-thumbnails/examples/js/get-asset-url.js";
 
 // Create loading overlay
 const loadingOverlay = document.createElement("div");

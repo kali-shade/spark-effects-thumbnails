@@ -2,15 +2,21 @@
  * Prepares a static deploy folder for GitHub Pages.
  * Copies effects, dist, examples; adds vendor libs; rewrites paths for repo base URL.
  *
- * Usage: BASE_PATH=/repo-name/ node scripts/prepare-pages-deploy.js
- * Or: node scripts/prepare-pages-deploy.js /repo-name/
+ * Default base is /spark-effects-thumbnails/ so deploy works at
+ * https://kali-shade.github.io/spark-effects-thumbnails/effects/
+ *
+ * Override: PAGES_BASE_PATH=/other/ node scripts/prepare-pages-deploy.js
+ * Or: node scripts/prepare-pages-deploy.js /other/
  */
 
 import fs from "node:fs";
 import path from "node:path";
 
 const DEPLOY_DIR = "deploy";
-const BASE_PATH = process.env.PAGES_BASE_PATH || process.argv[2] || "/";
+const BASE_PATH =
+  process.env.PAGES_BASE_PATH ||
+  process.argv[2] ||
+  "/spark-effects-thumbnails/";
 
 function copyDirSync(src, dest) {
   if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });

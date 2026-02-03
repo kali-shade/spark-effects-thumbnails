@@ -34,10 +34,10 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "/examples/js/vendor/three/build/three.module.js",
-        "three/addons/": "/examples/js/vendor/three/examples/jsm/",
-        "lil-gui": "/examples/js/vendor/lil-gui/dist/lil-gui.esm.js",
-        "@sparkjsdev/spark": "/dist/spark.module.js"
+        "three": "/spark-effects-thumbnails/examples/js/vendor/three/build/three.module.js",
+        "three/addons/": "/spark-effects-thumbnails/examples/js/vendor/three/examples/jsm/",
+        "lil-gui": "/spark-effects-thumbnails/examples/js/vendor/lil-gui/dist/lil-gui.esm.js",
+        "@sparkjsdev/spark": "/spark-effects-thumbnails/dist/spark.module.js"
       }
     }
   </script>
@@ -46,7 +46,7 @@
     import { SplatMesh, dyno, SparkControls, SplatEdit, SplatEditSdf, SplatEditSdfType, SplatEditRgbaBlendMode } from "@sparkjsdev/spark";
     import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
     import { GUI } from "lil-gui";
-    import { getAssetFileURL } from "/examples/js/get-asset-url.js";
+    import { getAssetFileURL } from "/spark-effects-thumbnails/examples/js/get-asset-url.js";
 
     // Scene
     const scene = new THREE.Scene();

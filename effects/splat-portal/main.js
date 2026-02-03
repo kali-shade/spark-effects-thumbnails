@@ -1,6 +1,6 @@
 import { SparkControls, SparkRenderer, SplatMesh } from "@sparkjsdev/spark";
 import * as THREE from "three";
-import { getAssetFileURL } from "/examples/js/get-asset-url.js";
+import { getAssetFileURL } from "/spark-effects-thumbnails/examples/js/get-asset-url.js";
 
 const canvas = document.getElementById("canvas");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
