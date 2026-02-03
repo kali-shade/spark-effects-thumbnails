@@ -1,7 +1,9 @@
+const ASSETS_BASE = "/spark-effects-thumbnails/examples";
+
 export async function getAssetFileURL(assetFile) {
   try {
-    const response = await fetch("/examples/assets.json");
-    const assetsDirectory = "/examples/assets/";
+    const response = await fetch(`${ASSETS_BASE}/assets.json`);
+    const assetsDirectory = `${ASSETS_BASE}/assets/`;
     const assetsInfo = await response.json();
     let url = assetsInfo[assetFile].url;
     if (window.sparkLocalAssets) {
